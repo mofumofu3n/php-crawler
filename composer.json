@@ -1,0 +1,15 @@
+{
+    "name": "mofumofu3n/php-crawler",
+    "description": "Crawler",
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "mofumofu",
+            "email": "mofumofu3n@gmail.com"
+        }
+    ],
+    "require": {}
+}
