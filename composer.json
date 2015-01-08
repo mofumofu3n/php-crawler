@@ -11,5 +11,10 @@
             "email": "mofumofu3n@gmail.com"
         }
     ],
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Mofumofu3n\\Crawler\\": "src/Mofumofu3n/Crawler"
+        }
+    }
 }
