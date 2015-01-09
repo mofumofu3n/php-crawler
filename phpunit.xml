@@ -10,6 +10,7 @@
          stopOnFailure="false"
          syntaxCheck="false"
          verbose="false">
+
     <filter>
         <whitelist>
             <directory suffix=".php">src/Mofumofu3n/Crawler/</directory>
