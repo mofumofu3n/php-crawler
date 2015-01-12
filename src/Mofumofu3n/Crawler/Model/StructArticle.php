@@ -1,5 +1,5 @@
 <?php
-namespace Mofumofu3n\Crawelr\Model;
+namespace Mofumofu3n\Crawler\Model;
 
 class StructArticle
 {

@@ -1,5 +1,5 @@
 <?php
-namespace Mofumofu3n\Crawelr;
+namespace Mofumofu3n\Crawler;
 
 class Crawler extends BaseCurl
 {

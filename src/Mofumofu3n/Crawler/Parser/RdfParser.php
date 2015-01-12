@@ -1,7 +1,7 @@
 <?php
-namespace Mofumofu3n\Crawelr\Parser;
+namespace Mofumofu3n\Crawler\Parser;
 
-use Mofumofu3n\Crawelr\Model\StructArticle;
+use Mofumofu3n\Crawler\Model\StructArticle;
 
 class RdfParser extends BaseParser
 {

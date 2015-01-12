@@ -1,5 +1,5 @@
 <?php
-namespace Mofumofu3n\Crawelr\Parser;
+namespace Mofumofu3n\Crawler\Parser;
 
 class ParserFactory
 {
