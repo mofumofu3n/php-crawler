@@ -2,7 +2,9 @@
 namespace Mofumofu3n\Crawler;
 
 use Mofumofu3n\Crawler\AbstractCrawler;
-
+use Mofumofu3n\Crawler\Parser\AtomParser;
+use Mofumofu3n\Crawler\Parser\RdfParser;
+use Mofumofu3n\Crawler\Parser\RssParser;
 
 class CrawlerTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,8 +19,6 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
         $feedB->url = "http://otanews.livedoor.biz/index.rdf";
         $feedB->id = 1;
         $this->multiDataset = array($feedA, $feedB);
-
-
     }
 
     /**
@@ -39,6 +39,21 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
         $stub->expects($this->at(0))->method('success');
         $stub->expects($this->at(1))->method('success');
         $stub->getContents();
+    }
+
+    public function testAtomParser()
+    {
+        $parser = new AtomParser();
+    }
+
+    public function testRdfParser()
+    {
+        $parser = new RdfParser();
+    }
+
+    public function testRssParser()
+    {
+        $parser = new RssParser();
     }
 }
 
