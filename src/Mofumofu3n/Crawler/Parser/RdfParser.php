@@ -1,31 +1,40 @@
 <?php
 namespace Mofumofu3n\Crawler\Parser;
 
-use Mofumofu3n\Crawler\Model\StructArticle;
+use Mofumofu3n\Crawler\Model\Article;
 
 class RdfParser extends BaseParser
 {
+    /**
+     * parse
+     *
+     * @param mixed $rssData
+     * @access protected
+     * @return array
+     */
     public function parse($rssData)
     {
         $articles = array();
         foreach ($rssData->item as $item) {
             array_push($articles, $this->parseArticle($item));
         }
-
         return $articles;
     }
 
-
+    /**
+     * parseArticle
+     *
+     * @param \SimpleXMLElement $entry
+     * @access public
+     * @return Article
+     */
     protected function parseArticle($entry)
     {
-        $article[StructArticle::ARTICLE_TITLE] = (string)$entry->title;
-        $article[StructArticle::ARTICLE_LINK] = (string)$entry->link;
-        $article[StructArticle::ARTICLE_IMAGE] = parent::getOgImage($article[StructArticle::ARTICLE_LINK]);
-        $article[StructArticle::ARTICLE_PUBLISHED_DATE] =
-            parent::getTimestamp((string)$entry->children('http://purl.org/dc/elements/1.1/')->date);
-        $article[StructArticle::ARTICLE_CONTENT] = (string)$entry->description;
-        $article[StructArticle::ARTICLE_RSS_ID] = $this->feedId;
-
+        $article = new Article();
+        $article->setTitle((string)$entry->title);
+        $article->setLink((string)$entry->link);
+        $article->setPublishedDate(parent::getTimestamp((string)$entry->children('http://purl.org/dc/elements/1.1/')->date));
+        $article->setContent((string)$entry->description);
         return $article;
     }
 }

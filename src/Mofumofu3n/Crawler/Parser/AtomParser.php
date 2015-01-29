@@ -1,10 +1,16 @@
 <?php
 namespace Mofumofu3n\Crawler\Parser;
 
-use Mofumofu3n\Crawler\Model\StructArticle;
+use Mofumofu3n\Crawler\Model\Article;
 
 class AtomParser extends BaseParser
 {
+    /**
+     * parse
+     *
+     * @param mixed $rssData
+     * @return array
+     */
     public function parse($rssData)
     {
         $articles = array();
@@ -14,16 +20,18 @@ class AtomParser extends BaseParser
         return $articles;
     }
 
-    public function parseArticle($entry)
+    /**
+     * parseArticle
+     * @param \SimpleXMLElement $entry
+     * @return Article
+     */
+    protected function parseArticle($entry)
     {
-        $article[StructArticle::ARTICLE_TITLE] = (string) $entry->title;
-        $article[StructArticle::ARTICLE_LINK] = (string) $entry->link->attributes()->href;
-        $article[StructArticle::ARTICLE_IMAGE] = parent::getOgImage($article[StructArticle::ARTICLE_LINK]);
-        $article[StructArticle::ARTICLE_PUBLISHED_DATE] = parent::getTimestamp((string)$entry->issued);
-
-        $article[StructArticle::ARTICLE_CONTENT] = (string) $entry->content;
-        $article[StructArticle::ARTICLE_RSS_ID] = $this->feedId;
-
+        $article = new Article();
+        $article->setTitle((string)$entry->title);
+        $article->setLink((string)$entry->link->attributes()->href);
+        $article->setPublishedDate(parent::getTimestamp((string)$entry->issued));
+        $article->setContent((string)$entry->content);
         return $article;
     }
 }
