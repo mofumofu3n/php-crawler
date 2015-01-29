@@ -14,7 +14,6 @@ abstract class AbstractCrawler
      * getContents
      * 引数に渡されたURLの配列かURLの文字列かで処理を分ける
      *
-     * @param mixed $url
      * @access public
      * @return void
      */
@@ -31,7 +30,6 @@ abstract class AbstractCrawler
      * getSingleContents
      * cURLで指定されたURLのコンテンツを取得する
      *
-     * @param $url
      * @access public
      * @return void
      */
@@ -104,22 +102,28 @@ abstract class AbstractCrawler
 
     /**
      * Curlのオプションを指定する
+     *
+     * @param $multiHandle
      */
-    protected function setCurlOption($maltiHundle)
+    protected function setCurlOption($multiHandle)
     {
         // curl_exec()の結果を文字列として返す
-        curl_setopt($maltiHundle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($multiHandle, CURLOPT_RETURNTRANSFER, true);
 
         // タイムアウトを30秒に設定
-        curl_setopt($maltiHundle, CURLOPT_TIMEOUT, 30);
+        curl_setopt($multiHandle, CURLOPT_TIMEOUT, 30);
 
         // リダイレクトを3回まで深ぼる
-        curl_setopt($maltiHundle, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($maltiHundle, CURLOPT_MAXREDIRS, 3);
+        curl_setopt($multiHandle, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($multiHandle, CURLOPT_MAXREDIRS, 3);
     }
 
     /**
      * 通信成功時の処理
+     *
+     * @param $feedId
+     * @param $content
+     * @return mixed
      */
     abstract protected function success($feedId, $content);
 
