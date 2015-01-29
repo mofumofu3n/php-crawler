@@ -8,7 +8,7 @@ class ParserFactory
      *
      * @static
      * @access public
-     * @param $type
+     * @param $type string RSSのタイプ(RDF, rss, feed)
      * @return AtomParser|RdfParser|RssParser|null
      */
     public static function factory($type)
