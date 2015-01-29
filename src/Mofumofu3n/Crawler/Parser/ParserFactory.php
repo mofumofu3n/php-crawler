@@ -3,14 +3,13 @@ namespace Mofumofu3n\Crawler\Parser;
 
 class ParserFactory
 {
-
     /**
      * RSSの種類に合わせてパーサーを返す
      *
-     * @param mixed $rssData
      * @static
      * @access public
-     * @return void
+     * @param $type
+     * @return AtomParser|RdfParser|RssParser|null
      */
     public static function factory($type)
     {
