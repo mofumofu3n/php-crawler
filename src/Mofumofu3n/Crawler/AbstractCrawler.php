@@ -5,6 +5,9 @@ abstract class AbstractCrawler
 {
     protected $feeds;
 
+    /**
+     * @param $feeds |array|string
+     */
     public function __construct($feeds)
     {
         $this->feeds = $feeds;
@@ -29,13 +32,10 @@ abstract class AbstractCrawler
     /**
      * getSingleContents
      * cURLで指定されたURLのコンテンツを取得する
-     *
-     * @access public
-     * @return void
      */
     public function getSingleContents()
     {
-        $conn = curl_init($this->feeds->url);
+        $conn = curl_init($this->feeds);
         $this->setCurlOption($conn);
 
         // cURLの実行
@@ -44,10 +44,10 @@ abstract class AbstractCrawler
         $statusCode = curl_getinfo($conn, CURLINFO_HTTP_CODE);
         if ($statusCode < 300 && $statusCode >= 200) {
             // 通信成功時
-            $this->success($this->feeds->id, $contents);
+            $this->success($this->feeds, $contents);
         } else {
             // 通信失敗時
-            $this->fail($statusCode, $feed->url);
+            $this->fail($statusCode, $this->feeds);
         }
         curl_close($conn);
     }
@@ -80,13 +80,12 @@ abstract class AbstractCrawler
             curl_multi_exec($multiHandle, $running);
         }
 
-        foreach ($this->feeds as $feed) {
-            $url = $feed->url;
+        foreach ($this->feeds as $url) {
             // ステータスコード
             $statusCode = curl_getinfo($handleList[$url], CURLINFO_HTTP_CODE);
             if ($statusCode < 300 && $statusCode >= 200) {
                 // 通信成功時
-                $this->success($feed->id, curl_multi_getcontent($handleList[$url]));
+                $this->success($url, curl_multi_getcontent($handleList[$url]));
             } else {
                 // 通信失敗時
                 $this->fail($statusCode, $url);
@@ -120,21 +119,15 @@ abstract class AbstractCrawler
 
     /**
      * 通信成功時の処理
-     *
-     * @param $feedId
+     * @param $url
      * @param $content
-     * @return mixed
      */
-    abstract protected function success($feedId, $content);
+    abstract protected function success($url, $content);
 
     /**
      * 通信失敗時の処理
-     *
-     * @param mixed $code
-     * @param mixed $url
-     * @abstract
-     * @access protected
-     * @return void
+     * @param $code
+     * @param $url
      */
     abstract protected function fail($code, $url);
 }
