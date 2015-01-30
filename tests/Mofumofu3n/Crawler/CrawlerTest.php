@@ -10,55 +10,59 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
 {
     public function setup()
     {
-        $feedA = new SingleFeed();
-        $feedA->url = "http://yaraon.blog109.fc2.com/?xml";
-        $feedA->id = 0;
-        $this->singleDataset = $feedA;
+        $this->targetUrl = "http://yaraon.blog109.fc2.com/?xml";
 
-        $feedB = new SingleFeed();
-        $feedB->url = "http://otanews.livedoor.biz/index.rdf";
-        $feedB->id = 1;
-        $this->multiDataset = array($feedA, $feedB);
+        $this->targetUrls = array();
+
+        array_push($this->targetUrls, "http://otanews.livedoor.biz/index.rdf");
+        array_push($this->targetUrls, "http://yaraon.blog109.fc2.com/?xml");
     }
 
     /**
-     * @requires extension curl
+     * URLを1つ渡すとsuccessが一度呼ばれる
      */
     public function testSingleGetContents()
     {
-        $stub = $this->getMockForAbstractClass('Mofumofu3n\Crawler\AbstractCrawler', array($this->singleDataset));
+        $stub = $this->getMockForAbstractClass('Mofumofu3n\Crawler\AbstractCrawler', array($this->targetUrl));
         $stub->expects($this->once())
             ->method('success');
         $stub->getContents();
     }
 
+    /**
+     * URLを複数渡すと数分successが呼ばれる
+     */
     public function testMultiGetContents()
     {
-        $stub = $this->getMockForAbstractClass('Mofumofu3n\Crawler\AbstractCrawler', array($this->multiDataset));
+        $stub = $this->getMockForAbstractClass('Mofumofu3n\Crawler\AbstractCrawler', array($this->targetUrls));
 
         $stub->expects($this->at(0))->method('success');
         $stub->expects($this->at(1))->method('success');
         $stub->getContents();
     }
 
-    public function testAtomParser()
+    /**
+     * @expectedException Exception
+     */
+    public function testExceptionWithAbstractCrawlerWhenNonArgs()
     {
-        $parser = new AtomParser();
+        $stub = $this->getMockForAbstractClass('Mofumofu3n\Crawler\AbstractCrawler', array());
+        $stub->getContents();
     }
 
-    public function testRdfParser()
+    public function testCrawlerWhenOneFeed()
     {
-        $parser = new RdfParser();
+        $crawler = new Crawler($this->targetUrl);
+        $result = $crawler->getContents();
+        $this->assertCount(30, $result);
     }
 
-    public function testRssParser()
+    public function testCrawlerWhenMultiFeed()
     {
-        $parser = new RssParser();
+        $crawler = new Crawler($this->targetUrls);
+        $result = $crawler->getContents();
+        $this->assertCount(2, $result);
+        var_dump($result);
     }
 }
 
-class SingleFeed
-{
-    public $url;
-    public $id;
-}
