@@ -31,6 +31,7 @@ class RssParser extends BaseParser
         $article = new Article();
         $article->setTitle((string)$entry->title);
         $article->setLink((string)$entry->link);
+        $article->setFeedLink($this->feedUrl);
         $article->setPublishedDate(parent::getTimestamp((string)$entry->pubDate));
         $article->setContent((string)$entry->description);
         return $article;

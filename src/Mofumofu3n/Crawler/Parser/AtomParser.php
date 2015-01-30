@@ -30,6 +30,7 @@ class AtomParser extends BaseParser
         $article = new Article();
         $article->setTitle((string)$entry->title);
         $article->setLink((string)$entry->link->attributes()->href);
+        $article->setFeedLink($this->feedUrl);
         $article->setPublishedDate(parent::getTimestamp((string)$entry->issued));
         $article->setContent((string)$entry->content);
         return $article;
