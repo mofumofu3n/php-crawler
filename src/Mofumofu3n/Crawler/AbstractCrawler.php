@@ -18,14 +18,14 @@ abstract class AbstractCrawler
      * 引数に渡されたURLの配列かURLの文字列かで処理を分ける
      *
      * @access public
-     * @return void
+     * @return array
      */
     public function getContents()
     {
         if (is_array($this->feeds)) {
-            $this->getMultiContents();
+            return $this->getMultiContents();
         } else {
-            $this->getSingleContents();
+            return $this->getSingleContents();
         }
     }
 
@@ -41,15 +41,17 @@ abstract class AbstractCrawler
         // cURLの実行
         $contents = curl_exec($conn);
 
+        $articles = NULL;
         $statusCode = curl_getinfo($conn, CURLINFO_HTTP_CODE);
         if ($statusCode < 300 && $statusCode >= 200) {
             // 通信成功時
-            $this->success($this->feeds, $contents);
+            $articles = $this->success($this->feeds, $contents);
         } else {
             // 通信失敗時
             $this->fail($statusCode, $this->feeds);
         }
         curl_close($conn);
+        return $articles;
     }
 
     /**
@@ -80,12 +82,16 @@ abstract class AbstractCrawler
             curl_multi_exec($multiHandle, $running);
         }
 
+        $feedArticles = array();
         foreach ($this->feeds as $url) {
             // ステータスコード
             $statusCode = curl_getinfo($handleList[$url], CURLINFO_HTTP_CODE);
             if ($statusCode < 300 && $statusCode >= 200) {
                 // 通信成功時
-                $this->success($url, curl_multi_getcontent($handleList[$url]));
+                $articles = $this->success($url, curl_multi_getcontent($handleList[$url]));
+                if (!is_null($articles)) {
+                    array_push($feedArticles, $articles);
+                }
             } else {
                 // 通信失敗時
                 $this->fail($statusCode, $url);
@@ -97,6 +103,7 @@ abstract class AbstractCrawler
         }
 
         curl_multi_close($multiHandle);
+        return $feedArticles;
     }
 
     /**
@@ -119,15 +126,15 @@ abstract class AbstractCrawler
 
     /**
      * 通信成功時の処理
-     * @param $url
+     * @param $feedUrl
      * @param $content
      */
-    abstract protected function success($url, $content);
+    abstract protected function success($feedUrl, $content);
 
     /**
      * 通信失敗時の処理
-     * @param $code
-     * @param $url
+     * @param $feedUrl
+     * @param int $code
      */
-    abstract protected function fail($code, $url);
+    abstract protected function fail($feedUrl, $code);
 }

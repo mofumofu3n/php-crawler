@@ -1,7 +1,9 @@
 <?php
 namespace Mofumofu3n\Crawler;
 
-class Crawler extends BaseCurl
+use Mofumofu3n\Crawler\Parser\ParserFactory;
+
+class Crawler extends AbstractCrawler
 {
 
     public function __construct($feeds)
@@ -11,8 +13,11 @@ class Crawler extends BaseCurl
 
     /**
      * 通信成功時の処理
+     * @param $feedUrl
+     * @param $content
+     * @return array feedの記事群
      */
-    protected function success($feedId, $content)
+    protected function success($feedUrl, $content)
     {
         $decode = simplexml_load_string($content);
         $type = $decode->getName();
@@ -20,25 +25,20 @@ class Crawler extends BaseCurl
         $parser = ParserFactory::factory($type);
 
         if (!isset($parser)) {
-            return;
+            return NULL;
         }
 
-        $parser->setFeedId($feedId);
-
-        // 記事をパース
+        $parser->setFeedUrl($feedUrl);
         $articles = $parser->parse($decode);
-
-        // DBに格納
-        foreach ($articles as $article) {
-            \Model_Article::insert($article);
-        }
+        return $articles;
     }
 
     /**
      * 通信失敗時の処理
+     * @param $feedUrl
+     * @param int $code
      */
-    protected function fail($code, $url)
+    protected function fail($feedUrl, $code)
     {
-        print($code . ": ". $url. "\n");
     }
 }
