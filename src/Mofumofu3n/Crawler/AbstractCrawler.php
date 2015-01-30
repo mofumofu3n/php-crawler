@@ -66,11 +66,10 @@ abstract class AbstractCrawler
         $handleList = array();
 
         // 指定されたURLをマルチハンドルに登録する
-        foreach ($this->feeds as $feed) {
-            $url = $feed->url;
-            $handleList[$url] = curl_init($url);
-            $this->setCurlOption($handleList[$url]);
-            curl_multi_add_handle($multiHandle, $handleList[$url]);
+        foreach ($this->feeds as $feedUrl) {
+            $handleList[$feedUrl] = curl_init($feedUrl);
+            $this->setCurlOption($handleList[$feedUrl]);
+            curl_multi_add_handle($multiHandle, $handleList[$feedUrl]);
         }
 
         // 全ての処理が完了するまで待つ
@@ -83,23 +82,23 @@ abstract class AbstractCrawler
         }
 
         $feedArticles = array();
-        foreach ($this->feeds as $url) {
+        foreach ($this->feeds as $feedUrl) {
             // ステータスコード
-            $statusCode = curl_getinfo($handleList[$url], CURLINFO_HTTP_CODE);
+            $statusCode = curl_getinfo($handleList[$feedUrl], CURLINFO_HTTP_CODE);
             if ($statusCode < 300 && $statusCode >= 200) {
                 // 通信成功時
-                $articles = $this->success($url, curl_multi_getcontent($handleList[$url]));
+                $articles = $this->success($feedUrl, curl_multi_getcontent($handleList[$feedUrl]));
                 if (!is_null($articles)) {
                     array_push($feedArticles, $articles);
                 }
             } else {
                 // 通信失敗時
-                $this->fail($statusCode, $url);
+                $this->fail($statusCode, $feedUrl);
             }
 
             // ハンドルを閉じる
-            curl_multi_remove_handle($multiHandle, $handleList[$url]);
-            curl_close($handleList[$url]);
+            curl_multi_remove_handle($multiHandle, $handleList[$feedUrl]);
+            curl_close($handleList[$feedUrl]);
         }
 
         curl_multi_close($multiHandle);
