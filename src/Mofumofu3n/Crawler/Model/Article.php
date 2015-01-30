@@ -20,6 +20,12 @@ class Article
     protected $link;
 
     /**
+     * FeedのURL
+     * @var string
+     */
+    protected $feedLink;
+
+    /**
      * 記事の入稿時間
      * @var int
      */
@@ -61,6 +67,22 @@ class Article
     public function setLink($link)
     {
         $this->link = $link;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFeedLink()
+    {
+        return $this->feedLink;
+    }
+
+    /**
+     * @param string $feedLink
+     */
+    public function setFeedLink($feedLink)
+    {
+        $this->feedLink = $feedLink;
     }
 
     /**
