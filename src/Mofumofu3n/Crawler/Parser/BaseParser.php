@@ -27,6 +27,8 @@ abstract class BaseParser
     abstract protected function parseArticle($entry);
 
     /**
+     * feedのURLをセット
+     *
      * @param string $feedUrl
      */
     public function setFeedUrl($feedUrl)
